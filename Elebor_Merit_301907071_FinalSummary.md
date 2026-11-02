@@ -4,11 +4,11 @@
 
 ## Case study
 
-My case study is Library Management System. I designed the database for library staff managing memberships and the catalogue and library staff recording loans and returns, with separate tables named member, book and loan. It supports these operations: register a member and catalogue a book; record a book loan and return; review loan activity by member, book, or date.
+My case study is Library Management System. I designed the database for the library staff managing memberships and the catalogue, also for the library staff recording loans and returns. There are seperate tables named member, book and loan. This supports the operations: register a member and catalogue a book; record a book loan and return; review loan activity by member, book, or date.
 
 ## Portfolio 1: Database Design and Modelling
 
-I organised the relational design into 3 tables. Primary keys identify records, foreign keys preserve the links, and checks enforce the stated business rules. A member cannot have two active loans for the same book; enforce uniqueness on member_id and book_id only for rows where returned_date is null. The normalisation examples show the sample data at 1NF, 2NF and 3NF. All 10 deliberately invalid inserts were rejected without changing the valid sample rows.
+I organised the relational design into 3 tables. Primary keys identify records, foreign keys preserve the links, and checks enforce the stated business rules. Here, a member cannot have two active loans for the same book; enforce uniqueness on member_id and book_id only for rows where returned_date is null. The normalisation examples show the sample data at 1NF, 2NF and 3NF. All 10 deliberately invalid inserts were rejected without changing the valid sample rows.
 
 ![Library Management System ER diagram](images/Elebor_Merit_301907071_ERDiagram.png)
 
@@ -47,7 +47,7 @@ I kept member, book, loan in separate tables so their details could be maintaine
 
 ## AI-use declaration
 
-I used GitHub Copilot and the portfolio generator to help prepare the database model, scripts and explanations. The generator ran the PostgreSQL and MongoDB exercises, checked their outputs and captured the result images.  I remain responsible for checking and explaining the submitted work.
+I utilized GitHub Copilot and a portfolio generator to assist in creating the database models, scripts, and explanations, This generator also executed the PostgreSQL and MongoDB exercises, verified the outputs and captured the images of the results. However, I personally reviewed, and checked the work before submission.
 
 ## References
 
