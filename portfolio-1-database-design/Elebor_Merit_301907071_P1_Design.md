@@ -5,12 +5,12 @@ My case study records member, book, loan.
 ## Users
 
 - Library staff managing memberships and the catalogue
-- Library staff recording loans and returns
+- Library staff recording loans and a book returns
 
 ## Main operations
 
 - Register a member and catalogue a book
-- Record a book loan and return
+- Record a book loan and a book return
 - Review loan activity by member, book, or date
 
 ## Entities
