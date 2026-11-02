@@ -1,7 +1,13 @@
-# Merit Elebor — MIT 8103
+# Library Management System
 
-Student ID: 301907071
+Merit Elebor · Student ID 301907071
 
-Library Management System
+The portfolio uses fictional records for Library Management System.
 
-The portfolio is being generated. Completed stages will appear in the commit history.
+- [Portfolio 1](portfolio-1-database-design/)
+- [Portfolio 2](portfolio-2-query-optimisation/)
+- [Portfolio 3](portfolio-3-transactions-concurrency/)
+- [Portfolio 4](portfolio-4-nosql/)
+- [Portfolio 5](portfolio-5-distributed-cloud/)
+
+[Final summary](Elebor_Merit_301907071_FinalSummary.md) · [PDF](Elebor_Merit_301907071_FinalSummary.pdf)
