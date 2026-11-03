@@ -18,7 +18,7 @@ Figure 1. Tables, keys and relationships. PK: primary key; FK: foreign key; UK: 
 
 ## Portfolio 2: Query Processing and Optimisation
 
-I ran three SQL queries against the sample records. The join returned 2 rows and included Avery Chen with 9780000000001. For the index comparison, I used 20,000 separate performance rows. The median lookup time changed from 1.028 ms to 0.231 ms. Both phases returned the same records. The measured plan used the new index. These timings apply to this lookup and environment.
+ran three SQL queries to test the sample records. The join returned two rows, including Avery Chen (ID: 9780000000001). To compare index performance, I tested against 20,000 separate rows. The execution plan confirmed it used the new index, which dropped the median lookup time from 1.028 ms down to just 0.231 ms. Both test phases returned the exact same records. Keep in mind that these timings are specific to this particular lookup and environment.
 
 ## Portfolio 3: Transactions and Concurrency
 
@@ -39,11 +39,13 @@ The portfolio folders contain the SQL and JavaScript, explanations, query plans,
 
 ## Portfolio 5: Distributed and Cloud Database Exercise
 
-I proposed three MongoDB replica members across separate failure zones. The discussion covers primary elections, majority acknowledgement, secondary lag and sharding trade-offs for loan_events. Replication supports availability, while backups address recovery. PostgreSQL needs its own availability plan. This is the permitted discussion option; no live replica set or failover test was deployed.
+For this database architecture, I proposed setting up three MongoDB replica members in separate failure zones. This discusses how primary elections work, the role of majority acknowledgment, and how to handle secondary lag, plus the pros and cons of sharding loan_events. I made sure to clarify that while replication keeps the system available, we still need backups for true recovery. PostgreSQL will also need its own availability plan. Just to be clear, this was a theoretical exercise—I didn't actually deploy a live replica set or run any failover tests.
 
 ## Individual reflection
 
-I kept member, book, loan in separate tables so their details could be maintained without repeating them in every related record. A member cannot have two active loans for the same book; enforce uniqueness on member_id and book_id only for rows where returned_date is null. The constraint tests check this alongside the required values and record links. One issue illustrated by the two-session exercise is that both sessions can read the same value before either update is committed. Locking the row before reading preserves both increments. The index comparison also shows why I need to check the execution plan as well as the final answer: the same result can require different amounts of database work.
+I split the data into separate tables for members, books, and loans to avoid repeating the same details across the database. To ensure a member can't check out the exact same book twice at once, I added a unique constraint on the member and book IDs—specifically for rows where the returned date is still null. My tests verify this logic, along with checking required fields and relationships.
+
+The two-session exercise really highlighted a classic race condition: both sessions can read the same starting value before either one finishes its update. Locking the row before reading solves this by making sure both updates are captured. Finally, testing the index reminded me why checking the execution plan is just as important as getting the right answer—two queries can return the exact same data, but one might make the database work a lot harder.
 
 ## AI-use declaration
 
