@@ -4,23 +4,22 @@ This is the proposed distributed design for the case study.
 
 ## Case and proposed deployment
 
-Library Management System keeps its relational records in PostgreSQL. MongoDB stores loan_events: Proposed event documents record loan lifecycle changes and embed member and book snapshots, corresponding to the Member and Book entities, so each event can be read with its lending context. Proposed deployment: the application connects to a three-member MongoDB replica set across three availability zones in one region. PostgreSQL also needs its own managed high-availability configuration. These are separate databases; a MongoDB replica set does not replicate PostgreSQL.
-
+For this Library Management System, PostgreSQL holds our main relational data, while MongoDB tracks loan_events To keep reads fast and straightforward, event documents embed snapshots of member and book data at the time of the event, giving each record immediate lending context. On the deployment side, MongoDB uses a three-member replica set spanning three distinct availability zones in one region. Because PostgreSQL is entirely separate, it needs its own high-availability strategy—setting up a MongoDB replica set won't manage PostgreSQL's failovers.
 ## Replication and availability
 
 One primary accepts writes. Two secondaries copy the oplog asynchronously. If the primary fails, eligible members can elect a replacement when a voting majority is available. Writes can pause during election. A partition without a majority cannot elect a primary. Three containers on one computer would not protect against loss of that computer.
 
 ## Consistency and the case
 
-For loan_events, a proposed client policy is majority write concern with a finite timeout, primary reads and majority read concern where committed data is required. Secondary reads can lag. Application retries need an idempotency key so the same event is not recorded twice. PostgreSQL constraints remain authoritative for Each member email address identifies at most one member. These settings do not create an atomic transaction across PostgreSQL and MongoDB. An outbox and retrying consumer would be a separate implementation.
+For loan_events, the proposed client policy uses a majority write concern with a finite timeout, targeting primary reads with a majority read concern whenever committed data is required. Secondary reads are permitted to lag. To prevent duplicate entries during retries, application-level retries require an idempotency key. Meanwhile, PostgreSQL constraints remain the authoritative check for business rules, such as ensuring each email address belongs to at most one member. Note that these settings do not establish atomic transactions across PostgreSQL and MongoDB—handling distributed consistency would require a separate outbox pattern and retrying consumer.
 
 ## Sharding trade-off
 
-Sharding partitions documents; replication copies them for availability. The small sample in this portfolio does not need sharding. If loan_events becomes large, evaluate a high-cardinality source-record identifier as a possible hashed shard key against actual query and write patterns. A time-only increasing key can concentrate new writes, while a hashed key can make time-range queries contact multiple shards. Validate distribution and query plans before choosing a key.
+Sharding distributes documents across nodes to scale out, while replication copies them to maintain high availability. Given the current dataset size in this portfolio, sharding isn't necessary. If loan_events grows significantly, a high-cardinality source identifier evaluated as a hashed shard key would be worth testing against real-world read/write patterns. Choosing a key involves clear trade-offs: a monotonically increasing timestamp key can create write hotspots on a single shard, whereas a hashed key scatters writes evenly but forces time-range queries to hit multiple shards. Any final key selection should be validated against actual data distribution and query execution plans.
 
 ## Cloud deployment and recovery
 
-A real deployment would use private networking, authentication, least-privilege roles, TLS, monitoring and tested backups. Replication also copies accidental deletions, so it does not replace backups. Availability zones do not provide regional disaster recovery. No cloud service was provisioned and no failover, replication, sharding or recovery experiment was run for this discussion.
+A production-ready deployment would incorporate private networking, strict authentication, least-privilege roles, TLS encryption, real-time monitoring, and validated backups. Note that while replication ensures high availability, it also propagates accidental deletions, meaning it cannot replace dedicated backups. Furthermore, distributing nodes across availability zones guards against localized outages but does not substitute for regional disaster recovery. As this was a theoretical architectural exercise, no cloud infrastructure was provisioned, and no live failover, replication, sharding, or backup recovery tests were conducted.
 
 ## References
 
